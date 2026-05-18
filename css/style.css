@@ -1,0 +1,326 @@
+/* ==========================================================================
+   1. GLOBAL SYSTEM & VARIABLE RESET
+   ========================================================================== */
+:root {
+    --bg-app: #f4f6f9;
+    --surface: #ffffff;
+    --text-main: #2d3748;
+    --text-muted: #718096;
+    
+    /* UT Brand Identity Palette */
+    --ut-blue: #0A3D62;
+    --ut-blue-light: #e6f0fa;
+    --ut-blue-hover: #072c47;
+    
+    /* Status Colors (Solid & Soft Accent) */
+    --success-base: #2ecc71;
+    --success-light: #eafaf1;
+    --warning-base: #f39c12;
+    --warning-light: #fef5e7;
+    --danger-base: #e74c3c;
+    --danger-light: #fdedec;
+    
+    --border: #e2e8f0;
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --transition: all 0.25s ease;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    max-width: 1140px; /* Ukuran ideal agar pandangan mata fokus / tidak terlalu lebar */
+    margin: 40px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* ==========================================================================
+   2. APP HEADER & NAVIGATION
+   ========================================================================== */
+header {
+    background: var(--surface);
+    padding: 20px 30px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+}
+
+header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ut-blue);
+    margin: 0;
+}
+
+.btn-back {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-back:hover {
+    color: var(--ut-blue);
+    transform: translateX(-3px);
+}
+
+/* ==========================================================================
+   3. MODERN CARDS LAYOUT
+   ========================================================================== */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+}
+
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ut-blue);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid var(--bg-app);
+    padding-bottom: 12px;
+}
+
+.bg-light {
+    background-color: #f8fafc;
+}
+
+.bg-warning-light {
+    background-color: var(--warning-light);
+    border-color: #fadbd8;
+}
+
+/* ==========================================================================
+   4. FORM LAYOUT & COMPONENT INPUT
+   ========================================================================== */
+.form-grid, .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Membagi 2 kolom agar seimbang dan rapi */
+    gap: 20px 25px;
+}
+
+/* Responsif: Di layar kecil/laptop mini otomatis jadi 1 kolom */
+@media (max-width: 768px) {
+    .form-grid, .filter-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group-full {
+    grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+    .form-group-full {
+        grid-column: span 1;
+    }
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 11px 16px;
+    font-size: 14px;
+    color: var(--text-main);
+    background-color: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    transition: var(--transition);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--ut-blue);
+    box-shadow: 0 0 0 3px rgba(10, 61, 98, 0.15);
+}
+
+.input-disabled {
+    background-color: #f1f5f9;
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.checkbox-group {
+    padding: 5px 0;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-main);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   5. CONTEMPORARY BUTTONS
+   ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.btn-primary { background-color: var(--ut-blue); color: #ffffff; }
+.btn-primary:hover { background-color: var(--ut-blue-hover); transform: translateY(-1px); }
+
+.btn-secondary { background-color: #e2e8f0; color: #4a5568; }
+.btn-secondary:hover { background-color: #cbd5e1; }
+
+.btn-success { background-color: var(--success-base); color: #ffffff; width: 100%; }
+.btn-success:hover { background-color: #27ae60; box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2); }
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+/* ==========================================================================
+   6. PREMIUM CLEAN TABLE DESIGN
+   ========================================================================== */
+.table-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.table-responsive {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+}
+
+.table-responsive th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--border);
+}
+
+.table-responsive td {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.table-responsive tr:last-child td {
+    border-bottom: none;
+}
+
+.table-responsive tr:hover {
+    background-color: #f8fafc;
+}
+
+/* ==========================================================================
+   7. MINIMALIST BADGES & LABELS
+   ========================================================================== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 30px;
+    text-align: center;
+}
+
+.badge-success { background-color: var(--success-light); color: #1e7e34; border: 1px solid #c3e6cb; }
+.badge-warning { background-color: var(--warning-light); color: #d35400; border: 1px solid #fdebd0; }
+.badge-danger { background-color: var(--danger-light); color: #c0392b; border: 1px solid #fadbd8; }
+.badge-info { background-color: var(--ut-blue-light); color: var(--ut-blue); border: 1px solid #b9d7f2; }
+
+code {
+    background: #f1f5f9;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.detail-paket-box {
+    background-color: #f0f7ff;
+    border-left: 4px solid var(--ut-blue);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    margin-top: 10px;
+}
+
+.text-danger {
+    color: var(--danger-base);
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 8px;
+}

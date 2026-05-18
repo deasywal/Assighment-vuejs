@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITTA UT - Stok Bahan Ajar</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <header>
+            <a href="index.html" class="btn-back">⬅ Kembali ke Utama</a>
+            <h1>📦 Manajemen Stok Bahan Ajar SITTA UT</h1>
+        </header>
+
+        <section class="card bg-light">
+            <h3>🔍 Filter & Pengurutan Data</h3>
+            <div class="filter-grid">
+                <div>
+                    <label>UT-Daerah (UPBJJ):</label>
+                    <select v-model="filters.upbjj">
+                        <option value="">-- Semua UT Daerah --</option>
+                        <option v-for="daerah in upbjjList" :key="daerah" :value="daerah">{{ daerah }}</option>
+                    </select>
+                </div>
+
+                <div v-show="filters.upbjj">
+                    <label>Kategori Mata Kuliah:</label>
+                    <select v-model="filters.kategori">
+                        <option value="">-- Semua Kategori --</option>
+                        <option v-for="kat in kategoriList" :key="kat" :value="kat">{{ kat }}</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Kondisi Stok Khusus:</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" v-model="filters.butuhReorder"> ⚠️ Butuh Re-order (Stok &lt; Safety / Kosong)
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label>Urutkan Berdasarkan:</label>
+                    <select v-model="sortBy">
+                        <option value="judul">Judul Mata Kuliah</option>
+                        <option value="qty">Jumlah Stok</option>
+                        <option value="harga">Harga</option>
+                    </select>
+                </div>
+            </div>
+            <button @click="resetFilters" class="btn btn-secondary" style="margin-top: 15px;">🔄 Reset Filter</button>
+        </section>
+
+        <section class="card">
+            <h3>➕ Tambah Data Bahan Ajar Baru</h3>
+            <form @submit.prevent="tambahBahanAjar" class="form-grid">
+                <div>
+                    <label>Kode MK *</label>
+                    <input type="text" v-model.trim="formTambah.kode" required placeholder="Contoh: EKMA4116">
+                </div>
+                <div>
+                    <label>Judul Mata Kuliah *</label>
+                    <input type="text" v-model="formTambah.judul" required placeholder="Nama Mata Kuliah">
+                </div>
+                <div>
+                    <label>Kategori *</label>
+                    <select v-model="formTambah.kategori" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        <option v-for="kat in kategoriList" :key="kat" :value="kat">{{ kat }}</option>
+                    </select>
+                </div>
+                <div>
+                    <label>UT-Daerah *</label>
+                    <select v-model="formTambah.upbjj" required>
+                        <option value="">-- Pilih UT-Daerah --</option>
+                        <option v-for="daerah in upbjjList" :key="daerah" :value="daerah">{{ daerah }}</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Lokasi Rak *</label>
+                    <input type="text" v-model="formTambah.lokasiRak" required placeholder="Contoh: R1-B5">
+                </div>
+                <div>
+                    <label>Jumlah Stok (QTY) *</label>
+                    <input type="number" v-model.number="formTambah.qty" min="0" required>
+                </div>
+                <div>
+                    <label>Safety Stock *</label>
+                    <input type="number" v-model.number="formTambah.safety" min="0" required>
+                </div>
+                <div>
+                    <label>Harga (Rp) *</label>
+                    <input type="number" v-model.number="formTambah.harga" min="0" required>
+                </div>
+                <div class="form-group-full">
+                    <label>Catatan (Mendukung HTML)</label>
+                    <textarea v-model="formTambah.catatanHTML" placeholder="Contoh: <strong>Edisi Revisi</strong>"></textarea>
+                </div>
+                <div class="form-group-full">
+                    <button type="submit" class="btn btn-success">💾 Simpan Bahan Ajar</button>
+                    <p v-if="errorForm" class="text-danger" v-text="errorForm"></p>
+                </div>
+            </form>
+        </section>
+
+        <section v-if="editingIndex !== null" class="card bg-warning-light">
+            <h3>✏️ Edit Stok Data Bahan Ajar: {{ formEdit.kode }}</h3>
+            <div class="form-grid">
+                <div>
+                    <label>Jumlah Stok Baru:</label>
+                    <input type="number" v-model.number="formEdit.qty" min="0">
+                </div>
+                <div>
+                    <label>Safety Stock:</label>
+                    <input type="number" v-model.number="formEdit.safety" min="0">
+                </div>
+                <div class="form-group-full" style="margin-top: 10px;">
+                    <button @click="simpanEdit" class="btn btn-primary" style="width: auto; margin-right: 10px;">Update Stok</button>
+                    <button @click="editingIndex = null" class="btn btn-secondary" style="width: auto;">Batal</button>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h3>📋 Daftar Real-time Stok Bahan Ajar</h3>
+            <div class="table-container">
+                <table class="table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Kode / Nama MK</th>
+                            <th>Kategori</th>
+                            <th>UT-Daerah</th>
+                            <th>Lokasi Rak</th>
+                            <th>Harga</th>
+                            <th>Stok / Safety</th>
+                            <th>Status</th>
+                            <th>Catatan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in filteredStokBahanAjar" :key="item.kode">
+                            <td>
+                                <strong>{{ item.kode }}</strong><br>
+                                <span v-text="item.judul"></span>
+                            </td>
+                            <td v-text="item.kategori"></td>
+                            <td>{{ item.upbjj }}</td>
+                            <td><code>{{ item.lokasiRak }}</code></td>
+                            <td>Rp {{ item.harga.toLocaleString() }}</td>
+                            <td>{{ item.qty }} / <small style="color: #666;">{{ item.safety }}</small></td>
+                            <td>
+                                <span v-if="item.qty === 0" class="badge badge-danger">🔴 Kosong</span>
+                                <span v-else-if="item.qty < item.safety" class="badge badge-warning">⚠️ Menipis</span>
+                                <span v-else class="badge badge-success">🟢 Aman</span>
+                            </td>
+                            <td v-html="item.catatanHTML || '-'"></td>
+                            <td>
+                                <button @click="inisialisasiEdit(item)" class="btn btn-sm btn-primary">Edit</button>
+                            </td>
+                        </tr>
+                        <tr v-if="filteredStokBahanAjar.length === 0">
+                            <td colspan="9" style="text-align: center; color: #999; padding: 20px;">Data tidak ditemukan.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/stok-app.js"></script>
+</body>
+</html>

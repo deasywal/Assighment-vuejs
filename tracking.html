@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITTA UT - Tracking DO</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        
+        <header>
+            <a href="index.html" class="btn-back">⬅ Kembali ke Utama</a>
+            <h1>🚚 Tracking Delivery Order (DO) Bahan Ajar</h1>
+        </header>
+
+        <section class="card">
+            <h3>📝 Registrasi Delivery Order (DO) Baru</h3>
+            <form @submit.prevent="prosesSimpanDO" class="form-grid">
+                <div>
+                    <label>Nomor DO (Otomatis):</label>
+                    <input type="text" :value="generateNextDONumber" disabled class="input-disabled" style="font-weight: bold; color: #0056b3;">
+                </div>
+                <div>
+                    <label>NIM Mahasiswa *</label>
+                    <input type="text" v-model.trim="formDO.nim" required placeholder="Masukkan NIM">
+                </div>
+                <div>
+                    <label>Nama Penerima *</label>
+                    <input type="text" v-model="formDO.nama" required placeholder="Nama Lengkap">
+                </div>
+                <div>
+                    <label>Ekspedisi Pengiriman *</label>
+                    <select v-model="formDO.ekspedisi" required>
+                        <option value="">-- Pilih Ekspedisi --</option>
+                        <option v-for="kurir in kurirList" :key="kurir.kode" :value="kurir.nama">{{ kurir.nama }}</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Pilih Paket Bahan Ajar *</label>
+                    <select v-model="paketTerpilih" required>
+                        <option :value="null">-- Pilih Paket --</option>
+                        <option v-for="p in paketList" :key="p.kode" :value="p">
+                            {{ p.kode }} - {{ p.nama }} (Rp {{ p.harga.toLocaleString() }})
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <label>Tanggal Pengiriman:</label>
+                    <input type="date" v-model="formDO.tanggalKirim">
+                </div>
+
+                <div v-if="paketTerpilih && paketTerpilih !== 'null'" class="detail-paket-box form-group-full">
+                    <h4>📦 Detail Komponen Dokumen {{ paketTerpilih.kode }}:</h4>
+                    <ul style="margin: 5px 0; padding-left: 20px;">
+                        <li v-for="buku in paketTerpilih.isi" :key="buku">Mata Kuliah Modul: {{ buku }}</li>
+                    </ul>
+                    <p style="margin-bottom: 0; margin-top: 10px;"><strong>Total Nominal Beban Harga:</strong> Rp {{ paketTerpilih.harga.toLocaleString() }}</p>
+                </div>
+
+                <div class="form-group-full" style="margin-top: 10px;">
+                    <button type="submit" class="btn btn-primary" style="width: auto;">🚀 Daftarkan DO & Kirim</button>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h3>📋 Manifes Rekap Pengiriman DO</h3>
+            <div class="table-container">
+                <table class="table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Nomor DO</th>
+                            <th>Identitas Mahasiswa</th>
+                            <th>Ekspedisi</th>
+                            <th>Paket / Komponen</th>
+                            <th>Tanggal Kirim</th>
+                            <th>Total Harga</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="doItem in trackingList" :key="doItem.noDO">
+                            <td><code>{{ doItem.noDO }}</code></td>
+                            <td><strong>{{ doItem.nim }}</strong><br><span style="color: #666;">{{ doItem.nama }}</span></td>
+                            <td><span class="badge badge-info">{{ doItem.ekspedisi }}</span></td>
+                            <td>
+                                <strong>{{ doItem.paketKode }}</strong>
+                                <ul style="margin: 5px 0 0 0; padding-left: 15px; font-size: 12px; color: #555;">
+                                    <li v-for="isi in doItem.detailIsi" :key="isi">{{ isi }}</li>
+                                </ul>
+                            </td>
+                            <td>{{ doItem.tanggalKirim }}</td>
+                            <td><strong>Rp {{ doItem.totalHarga.toLocaleString() }}</strong></td>
+                        </tr>
+                        <tr v-if="trackingList.length === 0">
+                            <td colspan="6" style="text-align: center; color: #999; padding: 20px;">Belum ada manifest pengiriman.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div> <script src="js/tracking-app.js"></script>
+</body>
+</html>
