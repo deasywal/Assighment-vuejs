@@ -3,7 +3,7 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
-            // Data Dummy Resmi Berdasarkan dataBahanAjar.js
+            // Data Dummy 
             upbjjList: ["Jakarta", "Surabaya", "Makassar", "Padang", "Denpasar"],
             kategoriList: ["MK Wajib", "MK Pilihan", "Praktikum", "Problem-Based"],
             stokBahanAjar: [

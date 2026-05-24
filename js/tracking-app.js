@@ -62,7 +62,7 @@ createApp({
                 nim: this.formDO.nim,
                 nama: this.formDO.nama,
                 ekspedisi: this.formDO.ekspedisi,
-                paketKode: this.paketTerpilih.kodePaket, // Sudah diperbaiki dari .kode menjadi .kodePaket
+                paketKode: this.paketTerpilih.kodePaket, 
                 detailIsi: [...this.paketTerpilih.isi],
                 tanggalKirim: this.formDO.tanggalKirim,
                 totalHarga: this.paketTerpilih.harga
